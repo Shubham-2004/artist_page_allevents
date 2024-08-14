@@ -1,65 +1,46 @@
-import 'package:artist_page/widget/Horizontal_divider.dart';
-import 'package:artist_page/widget/More_photos_to_show.dart';
-import 'package:artist_page/widget/Social_icon_row.dart';
-import 'package:artist_page/widget/about_artist.dart';
-import 'package:artist_page/widget/artist_page_sel_button.dart';
+import 'package:artist_page/screens/About_artist_page.dart';
+import 'package:artist_page/screens/Allevents_page.dart';
 import 'package:flutter/material.dart';
 
-class AboutArtist extends StatefulWidget {
-  const AboutArtist({Key? key}) : super(key: key);
-
-  @override
-  _AboutArtistState createState() => _AboutArtistState();
-}
-
-class _AboutArtistState extends State<AboutArtist> {
-  int selectedIndex = 0;
-
-  void onTabTap(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
+class ArtistPage extends StatelessWidget {
+  const ArtistPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Artist Page'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Artist Page'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+        body: Column(
           children: [
-            Row(
-              children: [
-                CustomTabButton(
-                  title: 'All Events',
-                  isSelected: selectedIndex == 0,
-                  onTap: () => onTabTap(0),
-                ),
-                CustomTabButton(
-                  title: 'About Artist',
-                  isSelected: selectedIndex == 1,
-                  onTap: () => onTabTap(1),
-                ),
-              ],
-            ),
             Container(
-              child: selectedIndex == 0
-                  ? Center(child: Text('All Events Content'))
-                  : ArtistAbout(
-                      artistName: 'Taylor Swift',
-                      aboutArtist:
-                          'Swift signed with Big Machine Records in 2005, starting as a country pop singer with her first two albums Taylor Swift (2006) and Fearless (2008). Their singles "Teardrops ',
-                    ),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: TabBar(
+                indicatorColor: Colors.blue,
+                labelColor: Colors.blue,
+                dividerColor: Colors.black,
+                dividerHeight: 0,
+                unselectedLabelColor: Colors.grey[600],
+                labelStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                tabs: const [
+                  Tab(text: 'All Events'),
+                  Tab(text: 'About Artist'),
+                ],
+              ),
             ),
-            SocialIconsRow(),
-            SizedBox(height: 10),
-            HorizontalDivider(),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: PhotoGrid(),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  AllEventsPage(),
+                  AboutArtistPage(),
+                ],
+              ),
             ),
           ],
         ),

@@ -99,7 +99,6 @@
 //     );
 //   }
 // }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -113,6 +112,9 @@ class PhotoGrid extends StatelessWidget {
       'assets/images/image2.jpeg',
       'assets/images/image3.jpeg',
       'assets/images/image4.jpeg',
+      'assets/images/image6.jpeg', // Additional images
+      'assets/images/image7.jpeg',
+      'assets/images/image7.jpeg',
     ];
 
     return Column(
@@ -126,60 +128,91 @@ class PhotoGrid extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-
-        // Use a SizedBox with a defined height to constrain the grid
         SizedBox(
-          height: 300, // Adjust the height as needed
-          // child: StaggeredGrid.count(
-          //   crossAxisCount: 3,
-          //   mainAxisSpacing: 4,
-          //   crossAxisSpacing: 4,
-          //   children: [
-          //     StaggeredGridTile.count(
-          //       crossAxisCellCount: 2,
-          //       mainAxisCellCount: 4,
-          //       child: ImageTile(imagePath: imagePaths[0]),
-          //     ),
-          //     StaggeredGridTile.count(
-          //       crossAxisCellCount: 1,
-          //       mainAxisCellCount: 1,
-          //       child: ImageTile(imagePath: imagePaths[1]),
-          //     ),
-          //     StaggeredGridTile.count(
-          //       crossAxisCellCount: 1,
-          //       mainAxisCellCount: 1,
-          //       child: ImageTile(imagePath: imagePaths[2]),
-          //     ),
-          //   ],
-          // ),
-          child: MasonryGridView.count(
-              itemCount: imagePaths.length,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 2,
-              crossAxisSpacing: 2,
-              itemBuilder: (context, index) {
-                return ImageTile(imagePath: imagePaths[index]);
-              }),
-        ),
+          height: 400,
+          child: StaggeredGrid.count(
+            crossAxisCount: 4,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            children: _buildTiles(imagePaths),
+          ),
+        )
       ],
     );
+  }
+
+  List<StaggeredGridTile> _buildTiles(List<String> imagePaths) {
+    List<StaggeredGridTile> tiles = [];
+    int maxPhotosToShow = 2;
+
+    for (int i = 0; i < imagePaths.length && i < maxPhotosToShow; i++) {
+      tiles.add(
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: i == 0 ? 4 : 2,
+          child: ImageTile(imagePath: imagePaths[i]),
+        ),
+      );
+    }
+
+    if (imagePaths.length > maxPhotosToShow) {
+      tiles.add(
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 2,
+          child: ImageTile(
+            imagePath: imagePaths[maxPhotosToShow],
+            showOverlay: true,
+            overlayText: '+${imagePaths.length - maxPhotosToShow}',
+          ),
+        ),
+      );
+    }
+
+    return tiles;
   }
 }
 
 class ImageTile extends StatelessWidget {
   final String imagePath;
+  final bool showOverlay;
+  final String overlayText;
 
-  const ImageTile({Key? key, required this.imagePath}) : super(key: key);
+  const ImageTile({
+    Key? key,
+    required this.imagePath,
+    this.showOverlay = false,
+    this.overlayText = '',
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0),
-      child: Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
-      ),
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+        ),
+        if (showOverlay)
+          Container(
+            color: Colors.black45,
+            child: Center(
+              child: Text(
+                overlayText,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
