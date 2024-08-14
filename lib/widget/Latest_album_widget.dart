@@ -43,7 +43,9 @@ class LatestAlbumWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8),
                         child: Image.asset(

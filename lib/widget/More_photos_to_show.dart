@@ -99,6 +99,8 @@
 //     );
 //   }
 // }
+import 'package:artist_page/widget/Image_tile.dart';
+import 'package:artist_page/widget/photo_deatil_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -111,10 +113,9 @@ class PhotoGrid extends StatelessWidget {
       'assets/images/image5.jpeg',
       'assets/images/image2.jpeg',
       'assets/images/image3.jpeg',
+      'assets/images/image1.jpeg',
       'assets/images/image4.jpeg',
-      'assets/images/image6.jpeg', // Additional images
-      'assets/images/image7.jpeg',
-      'assets/images/image7.jpeg',
+      'assets/images/image3.jpeg',
     ];
 
     return Column(
@@ -131,88 +132,94 @@ class PhotoGrid extends StatelessWidget {
         SizedBox(
           height: 400,
           child: StaggeredGrid.count(
-            crossAxisCount: 4,
+            crossAxisCount: 5,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
-            children: _buildTiles(imagePaths),
+            children: _buildTiles(imagePaths, context),
           ),
         )
       ],
     );
   }
 
-  List<StaggeredGridTile> _buildTiles(List<String> imagePaths) {
+  List<StaggeredGridTile> _buildTiles(
+      List<String> imagePaths, BuildContext context) {
     List<StaggeredGridTile> tiles = [];
-    int maxPhotosToShow = 2;
 
-    for (int i = 0; i < imagePaths.length && i < maxPhotosToShow; i++) {
+    if (imagePaths.isNotEmpty) {
       tiles.add(
         StaggeredGridTile.count(
-          crossAxisCellCount: 2,
-          mainAxisCellCount: i == 0 ? 4 : 2,
-          child: ImageTile(imagePath: imagePaths[i]),
+          crossAxisCellCount: 3,
+          mainAxisCellCount: 4,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PhotoDetailPage(
+                    imagePaths: imagePaths,
+                    initialIndex: 0,
+                  ),
+                ),
+              );
+            },
+            child: ImageTile(imagePath: imagePaths[0]),
+          ),
         ),
       );
     }
 
-    if (imagePaths.length > maxPhotosToShow) {
+    if (imagePaths.length > 1) {
+      // Second photo (40% width, half height)
       tiles.add(
         StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 2,
-          child: ImageTile(
-            imagePath: imagePaths[maxPhotosToShow],
-            showOverlay: true,
-            overlayText: '+${imagePaths.length - maxPhotosToShow}',
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PhotoDetailPage(
+                    imagePaths: imagePaths,
+                    initialIndex: 1,
+                  ),
+                ),
+              );
+            },
+            child: ImageTile(imagePath: imagePaths[1]),
+          ),
+        ),
+      );
+    }
+
+    if (imagePaths.length > 2) {
+      tiles.add(
+        StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 2,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PhotoDetailPage(
+                    imagePaths: imagePaths,
+                    initialIndex: 2,
+                  ),
+                ),
+              );
+            },
+            child: ImageTile(
+              imagePath: imagePaths[2],
+              showOverlay: true,
+              overlayText: '+${imagePaths.length - 3}',
+            ),
           ),
         ),
       );
     }
 
     return tiles;
-  }
-}
-
-class ImageTile extends StatelessWidget {
-  final String imagePath;
-  final bool showOverlay;
-  final String overlayText;
-
-  const ImageTile({
-    Key? key,
-    required this.imagePath,
-    this.showOverlay = false,
-    this.overlayText = '',
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ),
-        if (showOverlay)
-          Container(
-            color: Colors.black45,
-            child: Center(
-              child: Text(
-                overlayText,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
   }
 }
