@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
-class PhotoDetailPage extends StatelessWidget {
+class PhotoDetailPage extends StatefulWidget {
   final List<String> imagePaths;
   final int initialIndex;
 
@@ -11,35 +13,56 @@ class PhotoDetailPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _PhotoDetailPageState createState() => _PhotoDetailPageState();
+}
+
+class _PhotoDetailPageState extends State<PhotoDetailPage> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black, // Optional: to match the background
+        backgroundColor: Colors.black,
         title: const Text('Photo Detail'),
       ),
-      body: PageView.builder(
-        itemCount: imagePaths.length,
-        controller: PageController(initialPage: initialIndex),
-        itemBuilder: (context, index) {
-          return Hero(
-            tag: imagePaths[
-                index], // Ensure this tag matches the Hero widget in the grid
-            child: Center(
-              child: ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(8.0), // Maintain the border radius
-                child: Image.asset(
-                  imagePaths[index],
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                  height: double
-                      .infinity, // Ensure the image fills the available space
-                ),
-              ),
-            ),
-          );
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
         },
+        child: PhotoViewGallery.builder(
+          itemCount: widget.imagePaths.length,
+          pageController: _pageController,
+          builder: (context, index) {
+            return PhotoViewGalleryPageOptions(
+              imageProvider: AssetImage(widget.imagePaths[index]),
+              heroAttributes:
+                  PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
+              minScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered * 2.5,
+            );
+          },
+          scrollPhysics: const BouncingScrollPhysics(),
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          onPageChanged: (index) {
+            setState(() {});
+          },
+        ),
       ),
     );
   }
