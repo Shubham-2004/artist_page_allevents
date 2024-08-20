@@ -39,30 +39,25 @@ class _PhotoDetailPageState extends State<PhotoDetailPage> {
         backgroundColor: Colors.black,
         title: const Text('Photo Detail'),
       ),
-      body: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
+      body: PhotoViewGallery.builder(
+        itemCount: widget.imagePaths.length,
+        pageController: _pageController,
+        builder: (context, index) {
+          return PhotoViewGalleryPageOptions(
+            imageProvider: AssetImage(widget.imagePaths[index]),
+            heroAttributes:
+                PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 2.5,
+          );
         },
-        child: PhotoViewGallery.builder(
-          itemCount: widget.imagePaths.length,
-          pageController: _pageController,
-          builder: (context, index) {
-            return PhotoViewGalleryPageOptions(
-              imageProvider: AssetImage(widget.imagePaths[index]),
-              heroAttributes:
-                  PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
-              minScale: PhotoViewComputedScale.contained,
-              maxScale: PhotoViewComputedScale.covered * 2.5,
-            );
-          },
-          scrollPhysics: const BouncingScrollPhysics(),
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          onPageChanged: (index) {
-            setState(() {});
-          },
+        scrollPhysics: const BouncingScrollPhysics(),
+        backgroundDecoration: const BoxDecoration(
+          color: Colors.black,
         ),
+        onPageChanged: (index) {
+          setState(() {});
+        },
       ),
     );
   }
