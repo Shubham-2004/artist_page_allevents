@@ -52,7 +52,6 @@ class ImageTile extends StatelessWidget {
         ),
         if (showOverlay)
           Container(
-            color: Colors.black45,
             child: Center(
               child: Text(
                 overlayText,
