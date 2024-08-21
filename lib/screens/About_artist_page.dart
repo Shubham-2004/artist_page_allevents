@@ -3,6 +3,7 @@ import 'package:artist_page/widget/Latest_album_widget.dart';
 import 'package:artist_page/widget/More_photos_to_show.dart';
 import 'package:artist_page/widget/Social_icon_row.dart';
 import 'package:artist_page/widget/about_artist.dart';
+import 'package:artist_page/widget/artist_story_list_view.dart';
 import 'package:flutter/material.dart';
 
 class AboutArtistPage extends StatelessWidget {
@@ -33,6 +34,7 @@ class AboutArtistPage extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: PhotoGrid(),
           ),
+          ArtistStoryListView(),
         ],
       ),
     );

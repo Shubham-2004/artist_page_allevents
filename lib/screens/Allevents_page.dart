@@ -1,3 +1,4 @@
+import 'package:artist_page/widget/artist_story_list_view.dart';
 import 'package:flutter/material.dart';
 
 class AllEventsPage extends StatelessWidget {
@@ -5,8 +6,10 @@ class AllEventsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('All Events Content'),
+    return Scaffold(
+      body: Center(
+        child: ArtistStoryListView(),
+      ),
     );
   }
 }
