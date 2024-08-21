@@ -1,3 +1,4 @@
+import 'package:artist_page/widget/image_preview_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -18,10 +19,12 @@ class PhotoDetailPage extends StatefulWidget {
 
 class _PhotoDetailPageState extends State<PhotoDetailPage> {
   late PageController _pageController;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
   }
 
@@ -29,6 +32,17 @@ class _PhotoDetailPageState extends State<PhotoDetailPage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _onThumbnailTap(int index) {
+    setState(() {
+      _currentIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
@@ -39,25 +53,38 @@ class _PhotoDetailPageState extends State<PhotoDetailPage> {
         backgroundColor: Colors.black,
         title: const Text('Photo Detail'),
       ),
-      body: PhotoViewGallery.builder(
-        itemCount: widget.imagePaths.length,
-        pageController: _pageController,
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            imageProvider: AssetImage(widget.imagePaths[index]),
-            heroAttributes:
-                PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
-            minScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 2.5,
-          );
-        },
-        scrollPhysics: const BouncingScrollPhysics(),
-        backgroundDecoration: const BoxDecoration(
-          color: Colors.black,
-        ),
-        onPageChanged: (index) {
-          setState(() {});
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: PhotoViewGallery.builder(
+              itemCount: widget.imagePaths.length,
+              pageController: _pageController,
+              builder: (context, index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: AssetImage(widget.imagePaths[index]),
+                  heroAttributes:
+                      PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.covered * 2.5,
+                );
+              },
+              scrollPhysics: const BouncingScrollPhysics(),
+              backgroundDecoration: const BoxDecoration(
+                color: Colors.black,
+              ),
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+          ),
+          ImagePreviewWidget(
+            imagePaths: widget.imagePaths,
+            onTap: _onThumbnailTap,
+            selectedIndex: _currentIndex,
+          ),
+        ],
       ),
     );
   }
