@@ -1,4 +1,5 @@
 import 'package:artist_page/screens/Artist.dart';
+import 'package:artist_page/widget/Artist_on_tour_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,18 +9,16 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 152, 195, 230)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const ArtistPage(),
+      home: ArtistOnTourScreen(),
     );
   }
 }
