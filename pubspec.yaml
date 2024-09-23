@@ -41,6 +41,8 @@ dependencies:
   sizer: ^3.0.0
   hooks_riverpod: ^2.5.2
   cached_network_image: ^3.4.1
+  share_plus: ^10.0.2
+  screen_capture_event: ^1.1.1
 
 dev_dependencies:
   flutter_test:

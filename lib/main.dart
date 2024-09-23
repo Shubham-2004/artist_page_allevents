@@ -1,4 +1,4 @@
-import 'package:artist_page/screens/Artist.dart';
+import 'package:artist_page/screens/Share.dart';
 import 'package:artist_page/widget/Artist_on_tour_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: ArtistOnTourScreen(),
+      home:  DemoApp(),
     );
   }
 }
