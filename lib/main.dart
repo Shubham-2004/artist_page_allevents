@@ -1,24 +1,82 @@
-import 'package:artist_page/Other_features/screenshot_detector_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+      theme: ThemeData.light(),
+      home: const HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _otpCode = "";
+
+  @override
+  void initState() {
+    super.initState();
+    // Start listening for the SMS automatically when the page loads
+    SmsAutoFill().listenForCode();
+  }
+
+  @override
+  void dispose() {
+    // Unregister the listener when the widget is disposed
+    SmsAutoFill().unregisterListener();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SMS OTP Autofill'),
       ),
-      home: const ScreenshotDetector2(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const Text('Enter the OTP sent to your phone:'),
+            const SizedBox(height: 16.0),
+            // This widget automatically fills the code
+            PinFieldAutoFill(
+              decoration: UnderlineDecoration(
+                textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+                colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.3)),
+              ),
+              currentCode: _otpCode,
+              onCodeSubmitted: (code) {
+                setState(() {
+                  _otpCode = code; // Update the OTP when submitted
+                });
+              },
+              onCodeChanged: (code) {
+                if (code != null && code.length == 6) {
+                  setState(() {
+                    _otpCode = code; // Automatically fill the OTP
+                  });
+                  FocusScope.of(context).unfocus(); // Hide keyboard
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

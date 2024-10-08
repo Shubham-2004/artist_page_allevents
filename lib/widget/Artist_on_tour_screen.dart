@@ -1,5 +1,5 @@
-import 'package:artist_page/widget/Artist_on_tour_filterchip.dart';
 import 'package:flutter/material.dart';
+import 'package:artist_page/widget/Artist_on_tour_filterchip.dart';
 import 'package:artist_page/widget/Artist_on_tour_list.dart';
 
 class ArtistOnTourScreen extends StatefulWidget {
@@ -8,16 +8,19 @@ class ArtistOnTourScreen extends StatefulWidget {
 }
 
 class _ArtistOnTourScreenState extends State<ArtistOnTourScreen> {
+  List<String> _filters = ['Near you', 'Popular', 'Music', 'Comedy', 'Video'];
   String _selectedFilter = 'Near you';
   List<Map<String, dynamic>> _artists = [];
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     _updateArtists();
   }
 
-  List<Map<String, dynamic>> _getFilteredArtists() {
+  List<Map<String, dynamic>> _getFilteredArtists(String filter) {
     final allArtists = {
       'Near you': [
         {
@@ -62,20 +65,40 @@ class _ArtistOnTourScreenState extends State<ArtistOnTourScreen> {
           'isFollowed': false
         },
       ],
+      'Video': [
+        {
+          'imageUrl': 'https://example.com/video-artist.jpg',
+          'name': 'The Video Artist',
+          'showCount': 5,
+          'isFollowed': false
+        },
+      ],
     };
 
-    return allArtists[_selectedFilter] ?? [];
+    return allArtists[filter] ?? [];
   }
 
   void _updateArtists() {
     setState(() {
-      _artists = _getFilteredArtists();
+      _artists = _getFilteredArtists(_selectedFilter);
     });
   }
 
   void _onFilterChipSelected(String filter) {
+    _pageController.animateToPage(
+      _filters.indexOf(filter),
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
     setState(() {
       _selectedFilter = filter;
+      _updateArtists();
+    });
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedFilter = _filters[index];
       _updateArtists();
     });
   }
@@ -90,33 +113,42 @@ class _ArtistOnTourScreenState extends State<ArtistOnTourScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          height: 350,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0, bottom: 16, left: 12),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Artist On Tour",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 16, left: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Artist On Tour",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              ArtistOnTourFilterchip(onChipSelected: _onFilterChipSelected),
-              Expanded(
-                child: ArtistOnTourList(
-                  artists: _artists,
-                  onFollowToggle: _toggleFollowStatus,
-                ),
+            ),
+            // Pass the current page index to the filter chip
+            ArtistOnTourFilterchip(
+              selectedChip: _selectedFilter,
+              currentPageIndex: _filters.indexOf(_selectedFilter),
+              onChipSelected: _onFilterChipSelected,
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                itemCount: _filters.length,
+                itemBuilder: (context, index) {
+                  return ArtistOnTourList(
+                    artists: _artists,
+                    onFollowToggle: _toggleFollowStatus,
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

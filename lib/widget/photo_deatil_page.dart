@@ -64,8 +64,8 @@ class _PhotoDetailPageState extends State<PhotoDetailPage> {
                   imageProvider: AssetImage(widget.imagePaths[index]),
                   heroAttributes:
                       PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
-                  minScale: PhotoViewComputedScale.contained,
-                  maxScale: PhotoViewComputedScale.covered * 2.5,
+                  minScale: PhotoViewComputedScale.contained * 0.6,
+                  maxScale: PhotoViewComputedScale.covered * 2,
                 );
               },
               scrollPhysics: const BouncingScrollPhysics(),

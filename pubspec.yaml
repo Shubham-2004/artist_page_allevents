@@ -44,6 +44,11 @@ dependencies:
   share_plus: ^10.0.2
   screen_capture_event: ^1.1.1
   screen_recorder: ^0.3.0
+  otp_autofill: ^4.0.0
+  sms_otp_auto_verify: ^2.2.0
+  sms_autofill: ^2.4.0
+  fluttertoast: ^8.2.8
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
