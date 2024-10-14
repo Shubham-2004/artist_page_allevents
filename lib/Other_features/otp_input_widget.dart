@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_autofill/otp_autofill.dart';
-import 'sample_strategy.dart'; // Separate file for SampleStrategy
+import 'sample_strategy.dart';
 
 class OTPInputWidget extends StatefulWidget {
   const OTPInputWidget({Key? key}) : super(key: key);
